@@ -16,6 +16,15 @@ java {
     withSourcesJar()
 }
 
+jar {
+    manifest {
+        attributes(
+            'Name': 'io.github.tprado.type.alias',
+            'Sealed': true
+        )
+    }
+}
+
 dependencies {
     testImplementation(
         'org.junit.jupiter:junit-jupiter-api:5.6.0',
