@@ -7,6 +7,9 @@ public abstract class StringTypeAlias {
     private final String value;
 
     protected StringTypeAlias(String value) {
+        if (value == null) {
+            throw new NullPointerException("value cannot be null");
+        }
         this.value = value;
     }
 
