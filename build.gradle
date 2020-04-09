@@ -1,9 +1,19 @@
 plugins {
     id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
+
+group = 'io.github.tprado'
+version = '0.1.0-SNAPSHOT'
 
 repositories {
     jcenter()
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 dependencies {
@@ -19,4 +29,62 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'type-alias'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Type Alias'
+                description = 'Base classes for type aliases in Java'
+                url = 'https://github.com/tprado/type-alias'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://github.com/tprado/type-alias/blob/master/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tprado'
+                        name = 'Thiago Prado'
+                        email = 'thiago.gozzi.prado@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/tprado/type-alias.git'
+                    developerConnection = 'scm:git:git@github.com:tprado/type-alias.git'
+                    url = 'https://github.com/tprado/type-alias'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+            credentials {
+                username = ossrhUserName
+                password = ossrhPassword
+            }
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign publishing.publications.mavenJava
 }
