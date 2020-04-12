@@ -1,6 +1,7 @@
 package io.github.tprado.type.alias;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public abstract class StringTypeAlias {
 
@@ -11,6 +12,13 @@ public abstract class StringTypeAlias {
             throw new NullPointerException("value cannot be null");
         }
         this.value = value;
+    }
+
+    protected StringTypeAlias(Pattern pattern, String value) {
+        this(value);
+        if (!pattern.matcher(value).matches()) {
+            throw new IllegalArgumentException(String.format("'%s' does not match '%s'", value, pattern));
+        }
     }
 
     @Override
